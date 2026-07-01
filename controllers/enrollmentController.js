@@ -1,5 +1,6 @@
 import Enrollment from "../models/Enrollment.js";
 import Course from "../models/Course.js";
+import Payment from "../models/Payment.js";
 
 /**
  * 🎓 ENROLL IN COURSE
@@ -120,5 +121,29 @@ export const unenrollCourse = async (req, res) => {
       msg: "Error unenrolling course",
       error: error.message,
     });
+  }
+};
+
+
+
+
+export const checkEnrollment = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+
+    const enrollment = await Enrollment.findOne({
+      user: req.user._id,
+      course: courseId,
+      paymentStatus: "paid",
+      status: "enrolled",
+    });
+
+    if (!enrollment) {
+      return res.json({ access: false });
+    }
+
+    res.json({ access: true });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };

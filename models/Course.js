@@ -6,9 +6,24 @@ const courseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    description: String,
-    fee: Number,
-    image: String,
+
+    description: {
+      type: String,
+    },
+
+    originalPrice: {
+      type: Number,
+      default: 0,
+    },
+
+    salePrice: {
+      type: Number,
+      default: 0,
+    },
+
+    image: {
+      type: String,
+    },
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,

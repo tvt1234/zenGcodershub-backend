@@ -1,39 +1,20 @@
 import express from "express";
 import {
-  createPayment,
-  successPayment,
-  failPayment,
-  getUserPayments,
-  getAllPayments,
+  createOrder,
+  verifyPayment,
+  downloadReceiptPDF,
+  razorpayWebhook,
 } from "../controllers/paymentController.js";
 
 import { auth } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-/**
- * 💳 Create payment
- */
-router.post("/create", auth, createPayment);
+router.post("/create-order", auth, createOrder);
 
-/**
- * ✅ Success payment callback
- */
-router.post("/success", auth, successPayment);
+router.post("/verify-payment", auth, verifyPayment);
+router.get("/receipt/pdf/:courseId",auth,downloadReceiptPDF);
 
-/**
- * ❌ Fail payment
- */
-router.post("/fail", auth, failPayment);
-
-/**
- * 📄 User payments
- */
-router.get("/my", auth, getUserPayments);
-
-/**
- * 📊 Admin all payments
- */
-router.get("/all", auth, getAllPayments);
+router.post("/webhook", razorpayWebhook);
 
 export default router;

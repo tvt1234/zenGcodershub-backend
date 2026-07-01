@@ -1,18 +1,26 @@
+
 import Course from "../models/Course.js";
 
 /**
- * 📚 CREATE COURSE (Teacher / Admin)
+ * CREATE COURSE
  */
 export const createCourse = async (req, res) => {
   try {
-    const { title, description, fee, image } = req.body;
+    const {
+      title,
+      description,
+      originalPrice,
+      salePrice,
+      image,
+    } = req.body;
 
     const course = await Course.create({
       title,
       description,
-      fee,
+      originalPrice,
+      salePrice,
       image,
-      createdBy: req.user.id, // from JWT middleware
+      createdBy: req.user.id,
     });
 
     res.status(201).json({
@@ -28,7 +36,7 @@ export const createCourse = async (req, res) => {
 };
 
 /**
- * 📖 GET ALL COURSES (Public)
+ * GET ALL COURSES
  */
 export const getAllCourses = async (req, res) => {
   try {
@@ -36,7 +44,7 @@ export const getAllCourses = async (req, res) => {
       .populate("createdBy", "name role")
       .sort({ createdAt: -1 });
 
-    res.json(courses);
+    res.status(200).json(courses);
   } catch (error) {
     res.status(500).json({
       msg: "Error fetching courses",
@@ -46,7 +54,7 @@ export const getAllCourses = async (req, res) => {
 };
 
 /**
- * 📄 GET SINGLE COURSE
+ * GET SINGLE COURSE
  */
 export const getCourseById = async (req, res) => {
   try {
@@ -59,7 +67,7 @@ export const getCourseById = async (req, res) => {
       });
     }
 
-    res.json(course);
+    res.status(200).json(course);
   } catch (error) {
     res.status(500).json({
       msg: "Error fetching course",
@@ -69,7 +77,7 @@ export const getCourseById = async (req, res) => {
 };
 
 /**
- * ✏️ UPDATE COURSE (Only owner or admin)
+ * UPDATE COURSE
  */
 export const updateCourse = async (req, res) => {
   try {
@@ -81,9 +89,8 @@ export const updateCourse = async (req, res) => {
       });
     }
 
-    // Only creator or admin can update
     if (
-      course.createdBy.toString() !== req.user.id &&
+      course.createdBy?.toString() !== req.user.id &&
       req.user.role !== "admin"
     ) {
       return res.status(403).json({
@@ -94,12 +101,15 @@ export const updateCourse = async (req, res) => {
     const updatedCourse = await Course.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true }
+      {
+        new: true,
+        runValidators: true,
+      }
     );
 
-    res.json({
+    res.status(200).json({
       msg: "Course updated successfully",
-      updatedCourse,
+      course: updatedCourse,
     });
   } catch (error) {
     res.status(500).json({
@@ -110,7 +120,7 @@ export const updateCourse = async (req, res) => {
 };
 
 /**
- * 🗑️ DELETE COURSE
+ * DELETE COURSE
  */
 export const deleteCourse = async (req, res) => {
   try {
@@ -122,9 +132,8 @@ export const deleteCourse = async (req, res) => {
       });
     }
 
-    // Only creator or admin can delete
     if (
-      course.createdBy.toString() !== req.user.id &&
+      course.createdBy?.toString() !== req.user.id &&
       req.user.role !== "admin"
     ) {
       return res.status(403).json({
@@ -134,7 +143,7 @@ export const deleteCourse = async (req, res) => {
 
     await course.deleteOne();
 
-    res.json({
+    res.status(200).json({
       msg: "Course deleted successfully",
     });
   } catch (error) {
@@ -146,15 +155,15 @@ export const deleteCourse = async (req, res) => {
 };
 
 /**
- * 👨‍🏫 GET COURSES BY TEACHER
+ * GET TEACHER COURSES
  */
 export const getCoursesByTeacher = async (req, res) => {
   try {
     const courses = await Course.find({
       createdBy: req.user.id,
-    });
+    }).sort({ createdAt: -1 });
 
-    res.json(courses);
+    res.status(200).json(courses);
   } catch (error) {
     res.status(500).json({
       msg: "Error fetching teacher courses",
@@ -162,3 +171,4 @@ export const getCoursesByTeacher = async (req, res) => {
     });
   }
 };
+

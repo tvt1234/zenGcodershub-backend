@@ -14,10 +14,16 @@ const paymentSchema = new mongoose.Schema(
       required: true,
     },
 
-    amount: {
-      type: Number,
-      required: true,
+    enrollment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Enrollment",
     },
+
+    razorpay_order_id: String,
+    razorpay_payment_id: String,
+    razorpay_signature: String,
+
+    amount: Number,
 
     currency: {
       type: String,
@@ -26,23 +32,10 @@ const paymentSchema = new mongoose.Schema(
 
     paymentStatus: {
       type: String,
-      enum: ["pending", "success", "failed"],
-      default: "pending",
+      enum: ["created", "captured", "failed"],
+      default: "created",
     },
-
-    paymentMethod: {
-      type: String,
-      enum: ["razorpay", "stripe", "manual"],
-      default: "razorpay",
-    },
-
-    transactionId: {
-      type: String,
-    },
-
-    orderId: {
-      type: String,
-    },
+    method: String, // card, upi, netbanking
   },
   { timestamps: true }
 );

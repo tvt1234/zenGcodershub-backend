@@ -1,9 +1,12 @@
+
 import express from "express";
 import {
   enrollCourse,
   getMyEnrollments,
   updateProgress,
   unenrollCourse,
+  checkEnrollment,
+
 } from "../controllers/enrollmentController.js";
 
 import { auth } from "../middleware/authMiddleware.js";
@@ -29,5 +32,9 @@ router.put("/progress", auth, updateProgress);
  * ❌ Unenroll course
  */
 router.delete("/unenroll", auth, unenrollCourse);
+
+
+
+router.get("/check/:courseId", auth, checkEnrollment);
 
 export default router;
