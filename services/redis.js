@@ -10,28 +10,39 @@ let redisClient = null;
 export const initRedis = async () => {
   try {
     redisClient = createClient({
-      url: config.REDIS_URL,
+      socket: {
+        host: config.REDIS_HOST,
+        port: Number(config.REDIS_PORT),
+      },
+      username: config.REDIS_USERNAME,
+      password: config.REDIS_PASSWORD,
     });
 
     redisClient.on("error", (err) => {
-      console.error("❌ Redis Error:", err.message);
+      console.error("❌ Redis Error:", err);
     });
 
     redisClient.on("connect", () => {
+      console.log("🔄 Connecting to Redis...");
     });
 
     redisClient.on("ready", () => {
       console.log("✅ Redis Connected Successfully");
     });
 
+    redisClient.on("reconnecting", () => {
+      console.log("♻️ Reconnecting to Redis...");
+    });
+
+    redisClient.on("end", () => {
+      console.log("❌ Redis Connection Closed");
+    });
+
     await redisClient.connect();
 
     return redisClient;
   } catch (error) {
-    console.error(
-      "❌ Redis Connection Failed:",
-      error.message
-    );
+    console.error("❌ Redis Connection Failed:", error.message);
     return null;
   }
 };
