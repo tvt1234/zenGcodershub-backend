@@ -10,7 +10,7 @@ import { initRabbitMQ } from "./services/rabbitmq.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import enrollmentRoutes from "./routes/enrollmentRoutes.js";
-import paymentRoutes from "./routes/paymentRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js"; // <-- Add if exists
 import courseRoutes from "./routes/courseRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";

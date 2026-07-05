@@ -71,7 +71,7 @@ export const register = async (req, res) => {
   }
 };
 
-/* ================= LOGIN ================= */
+/* ================= LOGIN =========================================== */
 
 export const login = async (req, res) => {
   try {
@@ -146,6 +146,7 @@ export const forgotPassword = async (req, res) => {
         message: "Email is required",
       });
     }
+
 
     const normalizedEmail = email.toLowerCase().trim();
 

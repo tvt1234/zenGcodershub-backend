@@ -34,6 +34,9 @@ const startWorker = async () => {
     await transporter.verify();
     console.log("✅ SMTP Connected");
 
+
+    
+
     channel.consume(QUEUE_NAME, async (msg) => {
       if (!msg) return;
 
